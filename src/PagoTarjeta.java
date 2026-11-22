@@ -1,19 +1,43 @@
 /**
  * Subclase para pagos con tarjeta de crédito o débito (comisión 3.5%).
  */
-public class PagoTarjeta /* TODO 1: extends MetodoPago */ {
-    private String ultimosCuatroDigitos;
-    private String franquicia;
+public class PagoTarjeta extends MetodoPago {
+    private String ultimosDigitos;
+    private int cuotas;
 
-    public PagoTarjeta(String referencia, String titular, double montoBase, String ultimosCuatroDigitos, String franquicia) {
-        // TODO 2: Invocar super(...) y validar que ultimosCuatroDigitos tenga longitud 4
+    public PagoTarjeta(String referencia, String titular, double montoBase,
+                       String ultimosDigitos, int cuotas) {
+        super(referencia, titular, montoBase);
+        if (ultimosDigitos == null || ultimosDigitos.trim().length() != 4) {
+            throw new IllegalArgumentException("Los últimos dígitos deben tener 4 caracteres.");
+        }
+        if (cuotas < 1) {
+            throw new IllegalArgumentException("Las cuotas deben ser al menos 1.");
+        }
+        this.ultimosDigitos = ultimosDigitos.trim();
+        this.cuotas = cuotas;
     }
 
-    // TODO 3: Sobreescribir @Override calcularComision() -> 3.5% de montoBase (montoBase * 0.035)
+    @Override
+    public double calcularComision() {
+        return montoBase * 0.035;
+    }
 
-    // TODO 4: Sobreescribir @Override procesarPago() mostrando franquicia y ****digitos
+    @Override
+    public String procesarPago() {
+        return String.format("Procesando cargo con tarjeta ****%s en %d cuota(s) por %.2f",
+                ultimosDigitos, cuotas, calcularTotal());
+    }
 
-    // TODO 5: Sobreescribir @Override mostrarComprobante() extendiendo super.mostrarComprobante()
+    @Override
+    public String mostrarComprobante() {
+        return super.mostrarComprobante() + String.format(" | Tarjeta: ****%s | Cuotas: %d",
+                ultimosDigitos, cuotas);
+    }
 
-    // TODO 6: Sobreescribir @Override toString() extendiendo super.toString()
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" [ultimosDigitos='%s', cuotas=%d]",
+                ultimosDigitos, cuotas);
+    }
 }

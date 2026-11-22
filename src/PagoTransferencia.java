@@ -1,19 +1,43 @@
 /**
  * Subclase para pagos por transferencia bancaria (tarifa fija de $0.50).
  */
-public class PagoTransferencia /* TODO 1: extends MetodoPago */ {
+public class PagoTransferencia extends MetodoPago {
     private String bancoOrigen;
     private String numeroComprobante;
 
-    public PagoTransferencia(String referencia, String titular, double montoBase, String bancoOrigen, String numeroComprobante) {
-        // TODO 2: Invocar super(...) y validar bancoOrigen y numeroComprobante
+    public PagoTransferencia(String referencia, String titular, double montoBase,
+                             String bancoOrigen, String numeroComprobante) {
+        super(referencia, titular, montoBase);
+        if (bancoOrigen == null || bancoOrigen.trim().isEmpty()) {
+            throw new IllegalArgumentException("El banco de origen no puede estar vacío.");
+        }
+        if (numeroComprobante == null || numeroComprobante.trim().isEmpty()) {
+            throw new IllegalArgumentException("El número de comprobante no puede estar vacío.");
+        }
+        this.bancoOrigen = bancoOrigen.trim();
+        this.numeroComprobante = numeroComprobante.trim();
     }
 
-    // TODO 3: Sobreescribir @Override calcularComision() retornando 0.50
+    @Override
+    public double calcularComision() {
+        return 0.50;
+    }
 
-    // TODO 4: Sobreescribir @Override procesarPago() indicando banco y número de comprobante
+    @Override
+    public String procesarPago() {
+        return String.format("Procesando transferencia desde %s (Comp. %s) por total %.2f",
+                bancoOrigen, numeroComprobante, calcularTotal());
+    }
 
-    // TODO 5: Sobreescribir @Override mostrarComprobante() extendiendo super.mostrarComprobante()
+    @Override
+    public String mostrarComprobante() {
+        return super.mostrarComprobante() + String.format(" | Banco: %s | Comprobante #: %s",
+                bancoOrigen, numeroComprobante);
+    }
 
-    // TODO 6: Sobreescribir @Override toString() extendiendo super.toString()
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" [bancoOrigen='%s', numeroComprobante='%s']",
+                bancoOrigen, numeroComprobante);
+    }
 }

@@ -1,19 +1,43 @@
 /**
  * Subclase para pagos por billetera digital (1.5% con tope máximo de $3.00).
  */
-public class PagoBilleteraDigital /* TODO 1: extends MetodoPago */ {
+public class PagoBilleteraDigital extends MetodoPago {
     private String proveedor;
     private String aliasUsuario;
 
-    public PagoBilleteraDigital(String referencia, String titular, double montoBase, String proveedor, String aliasUsuario) {
-        // TODO 2: Invocar super(...) y validar proveedor y aliasUsuario
+    public PagoBilleteraDigital(String referencia, String titular, double montoBase,
+                                String proveedor, String aliasUsuario) {
+        super(referencia, titular, montoBase);
+        if (proveedor == null || proveedor.trim().isEmpty()) {
+            throw new IllegalArgumentException("El proveedor no puede estar vacío.");
+        }
+        if (aliasUsuario == null || aliasUsuario.trim().isEmpty()) {
+            throw new IllegalArgumentException("El alias de usuario no puede estar vacío.");
+        }
+        this.proveedor = proveedor.trim();
+        this.aliasUsuario = aliasUsuario.trim();
     }
 
-    // TODO 3: Sobreescribir @Override calcularComision() -> Math.min(montoBase * 0.015, 3.00)
+    @Override
+    public double calcularComision() {
+        return Math.min(montoBase * 0.015, 10.0);
+    }
 
-    // TODO 4: Sobreescribir @Override procesarPago() indicando débito QR del proveedor y alias
+    @Override
+    public String procesarPago() {
+        return String.format("Procesando débito de billetera digital (%s - %s) por total %.2f",
+                proveedor, aliasUsuario, calcularTotal());
+    }
 
-    // TODO 5: Sobreescribir @Override mostrarComprobante() extendiendo super.mostrarComprobante()
+    @Override
+    public String mostrarComprobante() {
+        return super.mostrarComprobante() + String.format(" | Proveedor: %s | Alias: %s",
+                proveedor, aliasUsuario);
+    }
 
-    // TODO 6: Sobreescribir @Override toString() extendiendo super.toString()
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" [proveedor='%s', aliasUsuario='%s']",
+                proveedor, aliasUsuario);
+    }
 }

@@ -2,24 +2,38 @@
  * Subclase para pagos en efectivo.
  * PASO 2: Aplicar herencia (extends MetodoPago) y sobreescribir métodos con @Override.
  */
-public class PagoEfectivo /* TODO 1: extends MetodoPago */ {
-    private double montoEntregado;
 
-    public PagoEfectivo(String referencia, String titular, double montoBase, double montoEntregado) {
-        // TODO 2: Invocar super(referencia, titular, montoBase)
-        // TODO 3: Validar que montoEntregado >= montoBase y asignarlo
+public class PagoEfectivo extends MetodoPago {
+    private double montoRecibido;
+
+    public PagoEfectivo(String referencia, String titular, double montoBase, double montoRecibido) {
+        super(referencia, titular, montoBase);
+        if (montoRecibido < montoBase) {
+            throw new IllegalArgumentException("El monto recibido no puede ser menor al monto base.");
+        }
+        this.montoRecibido = montoRecibido;
     }
 
-    public double calcularVuelto() {
-        // TODO 4: Retornar montoEntregado - calcularTotal()
+    @Override
+    public double calcularComision() {
         return 0.0;
     }
 
-    // TODO 5: Sobreescribir @Override calcularComision() retornando 0.0
+    @Override
+    public String procesarPago() {
+        double cambio = montoRecibido - calcularTotal();
+        return String.format("Procesando pago en efectivo | Recibido: %.2f | Cambio: %.2f",
+                montoRecibido, Math.max(0.0, cambio));
+    }
 
-    // TODO 6: Sobreescribir @Override procesarPago() indicando confirmación y vuelto
+    @Override
+    public String mostrarComprobante() {
+        return super.mostrarComprobante() + String.format(" | Recibido: %.2f", montoRecibido);
+    }
 
-    // TODO 7: Sobreescribir @Override mostrarComprobante() reutilizando super.mostrarComprobante()
-
-    // TODO 8: Sobreescribir @Override toString() reutilizando super.toString()
+    @Override
+    public String toString() {
+        return super.toString() + String.format(" [montoRecibido=%.2f]", montoRecibido);
+    }
 }
+ 

@@ -1,20 +1,30 @@
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Clase principal para probar el polimorfismo con una colección de MetodoPago.
- * PASO FINAL: Instanciar las subclases dentro de List<MetodoPago> y recorrerlas
- * sin usar condicionales if/else por tipo de objeto.
- */
 public class Main {
     public static void main(String[] args) {
         List<MetodoPago> lotePagos = new ArrayList<>();
 
-        // TODO 1: Agregar al menos un objeto de cada subclase a lotePagos:
-        // PagoEfectivo, PagoTarjeta, PagoTransferencia y PagoBilleteraDigital
+        lotePagos.add(new PagoEfectivo("REF-001", "Ana Gómez", 100.0, 120.0));
+        lotePagos.add(new PagoTarjeta("REF-002", "Carlos Ruiz", 250.0, "4532", 3));
+        lotePagos.add(new PagoTransferencia("REF-003", "María López", 400.0, "Banco Pichincha", "COMP-8891"));
+        lotePagos.add(new PagoBilleteraDigital("REF-004", "Luis Vera", 80.0, "Nequi", "@luis.vera"));
 
-        // TODO 2: Recorrer lotePagos con un ciclo for-each de tipo MetodoPago
-        // Imprimir pago.procesarPago(), pago.mostrarComprobante() y pago (toString)
-        // Acumular totalComisiones y totalRecaudado polimórficamente
+        double totalComisiones = 0.0;
+        double totalRecaudado = 0.0;
+
+        for (MetodoPago pago : lotePagos) {
+            System.out.println(pago.procesarPago());
+            System.out.println(pago.mostrarComprobante());
+            System.out.println("toString(): " + pago);
+
+            totalComisiones += pago.calcularComision();
+            totalRecaudado += pago.calcularTotal();
+
+            System.out.println("--------------------------------------------------");
+        }
+
+        System.out.printf("Total Comisiones : %.2f%n", totalComisiones);
+        System.out.printf("Total Recaudado  : %.2f%n", totalRecaudado);
     }
 }
